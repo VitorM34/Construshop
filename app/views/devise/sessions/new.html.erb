@@ -1,0 +1,40 @@
+<main class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-0 flex flex-col md:flex-row overflow-hidden">
+    <!-- Formulário -->
+    <div class="w-full md:w-1/2 flex flex-col justify-center p-8">
+      <div class="flex flex-col items-center mb-2">
+        <%= image_tag "logo.png", alt: "Logo", class: "h-12 w-12 object-contain mb-2" %>
+        <h1 class="text-2xl font-bold text-blue-700 mb-2">Construshop</h1>
+        <h2 class="text-gray-600 text-base mb-4">Faça login para continuar</h2>
+      </div>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="space-y-4">
+          <div>
+            <%= f.label :email, class: "block text-xs font-medium text-gray-700" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" %>
+          </div>
+          <div>
+            <%= f.label :password, class: "block text-xs font-medium text-gray-700" %>
+            <%= f.password_field :password, autocomplete: "current-password", class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" %>
+          </div>
+          <% if devise_mapping.rememberable? %>
+            <div class="flex items-center space-x-2">
+              <%= f.check_box :remember_me, class: "rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" %>
+              <%= f.label :remember_me, class: "text-xs text-gray-700" %>
+            </div>
+          <% end %>
+          <div>
+            <%= f.submit "Entrar", class: "w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold text-sm" %>
+          </div>
+        </div>
+      <% end %>
+      <div class="text-center text-xs text-gray-600 mt-2">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+    <!-- Logo ao lado -->
+    <div class="hidden md:flex md:w-1/2 items-center justify-center bg-gray-50">
+      <%= image_tag "logo.png", alt: "Logo Construction Store", class: "h-40 w-40 object-contain" %>
+    </div>
+  </div>
+</main>

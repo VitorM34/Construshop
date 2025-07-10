@@ -1,0 +1,11 @@
+<% content_for :title, "New produto" %>
+
+<h1 class=" flex-col items-center semibold text-black text-center mb-auto py-3">Novo produto</h1>
+
+<%= render "form", produto: @produto %>
+
+<br>
+
+<div class="text-center">
+  <%= link_to "Voltar ao menu principal", produtos_path %>
+</div>

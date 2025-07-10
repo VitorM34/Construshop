@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Construshop" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload" %>
+   
+    
+    <!-- Adicione o Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+      /* Estilos adicionais para o carrinho */
+      .carrinho-modal {
+        background: rgb(36, 38, 143) !important;
+        opacity: 1 !important;
+      }
+      .carrinho-item:hover {
+        background-color: #9fa3a3;
+      }
+      .carrinho-quantidade-btn {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col min-h-screen bg-gray-80 text-gray-500" x-data="{ carrinhoAberto: false }">
+    <!-- Header -->
+    <header class="bg-[#0a33ba] text-white px-6 py-4 flex justify-between items-center shadow-md rounded">
+      <a href="/" class="text-3xl font-bold tracking-wide hover:underline transition-colors">Construshop</a>
+      
+      <nav class="flex items-center space-x-6 text-base">
+        <a href="/quem-somos" class="transition-colors text-white duration-200 hover:text-gray-100">Quem somos</a>
+        <a href="/atendimento" class="transition-colors text-white duration-200 hover:text-gray-100">Avalie-nos</a>
+        <a href="tel:+559999999999" class="transition-colors text-white duration-200 hover:text-gray-100">📞 Telefone</a>
+
+     <% if user_signed_in? %>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "bg-[#444] hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+     <% end %>
+
+        <!-- Botão do carrinho -->
+        <button @click="carrinhoAberto = true" class="ml-4 relative flex items-center hover:bg-blue-100 transition-colors duration-200 rounded p-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 
+              0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span x-text="$store.carrinho.totalItens" 
+                class="absolute -top-2 -right-2 bg-white text-[#0a33ba] rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold shadow-md">
+          </span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Modal do Carrinho-->
+    <div x-show="carrinhoAberto" @click.away="carrinhoAberto = false" 
+         x-transition:enter="ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 carrinho-modal" 
+         style="display: none; background-color: rgba(0, 0, 0, 0.5);">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div class="p-4">
+          <div class="flex justify-between items-center border-b pb-3">
+            <h3 class="text-lg font-bold">Seu Carrinho</h3>
+            <button @click="carrinhoAberto = false" class="text-gray-500 hover:text-gray-700">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div class="mt-4">
+            <template x-if="$store.carrinho.itens.length === 0">
+              <p class="text-gray-500 text-center py-4">Seu carrinho está vazio</p>
+            </template>
+            
+            <template x-for="(item, index) in $store.carrinho.itens" :key="item.id">
+              <div class="flex justify-between items-center py-3 border-b carrinho-item">
+                <div class="flex-1">
+                  <h4 x-text="item.nome" class="font-medium text-gray-900"></h4>
+                  <p x-text="'R$ ' + item.preco.toFixed(2).replace('.', ',')" class="text-sm text-gray-500"></p>
+                </div>
+                
+                <div class="flex items-center">
+                  <button @click="$store.carrinho.diminuirQuantidade(index)" class="carrinho-quantidade-btn bg-gray-200 rounded-l">
+                    -
+                  </button>
+                  <span x-text="item.quantidade" class="px-3"></span>
+                  <button @click="$store.carrinho.aumentarQuantidade(index)" class="carrinho-quantidade-btn bg-gray-200 rounded-r">
+                    +
+                  </button>
+                  <span x-text="'R$ ' + (item.preco * item.quantidade).toFixed(2).replace('.', ',')" class="ml-4 w-20 text-right"></span>
+                  <button @click="$store.carrinho.removerItem(index)" class="ml-4 text-red-500 hover:text-red-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </template>
+          </div>
+          
+          <div class="mt-4 pt-3 border-t">
+            <div class="flex justify-between font-bold mb-4">
+              <span>Total:</span>
+              <span x-text="'R$ ' + $store.carrinho.total.toFixed(2).replace('.', ',')"></span>
+            </div>
+            <button @click="window.location.href='/checkout'" 
+                    class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+              Finalizar Compra
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <main class="flex flex-col min-h-[76vh] p-5">
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white rounded-sm shadow-sm dark:bg-[#0a33ba] m-1 rounded ">
+      <div class="w-full max-w-screen-xl mx-auto p-6 md:py-8">
+        <div class="flex items-center justify-between">
+          <span class="text-4xl font-semibold dark:text-white">Store</span>
+          <ul class="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 ml-auto space-x-10">
+            <li><a href="#" class="hover:underline text-white">Sobre</a></li>
+            <li><a href="#" class="hover:underline text-white">Politica de privacidade</a></li>
+            <li><a href="#" class="hover:underline text-white">Licença</a></li>
+            <li><a href="#" class="hover:underline text-white">Contato</a></li>
+          </ul>
+        </div>
+        <hr class="my-6 border-gray-800 dark:border-gray-500 lg:my-2" />
+        <span class="block text-sm text-white sm:text-center dark:text-white">
+          © 2025 <a href="https://Produtos" class="hover:underline">Construshop™</a>. Todos os direitos reservados.
+        </span>
+      </div>
+    </footer>
+
+    <!-- Script do Carrinho -->
+    <script>
+      document.addEventListener('alpine:init', () => {
+        Alpine.store('carrinho', {
+          itens: [],
+          
+          init() {
+            // Carrega itens do localStorage ao iniciar
+            const carrinhoSalvo = localStorage.getItem('carrinho');
+            if (carrinhoSalvo) {
+              this.itens = JSON.parse(carrinhoSalvo);
+            }
+          },
+          
+          get totalItens() {
+            return this.itens.reduce((total, item) => total + item.quantidade, 0);
+          },
+          
+          get total() {
+            return this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+          },
+          
+          adicionarItem(produto) {
+            const itemExistente = this.itens.find(item => item.id === produto.id);
+            
+            if (itemExistente) {
+              itemExistente.quantidade++;
+            } else {
+              this.itens.push({
+                ...produto,
+                quantidade: 1
+              });
+            }
+            
+            this.salvarCarrinho();
+          },
+          
+          aumentarQuantidade(index) {
+            this.itens[index].quantidade++;
+            this.salvarCarrinho();
+          },
+          
+          diminuirQuantidade(index) {
+            if (this.itens[index].quantidade > 1) {
+              this.itens[index].quantidade--;
+            } else {
+              this.itens.splice(index, 1);
+            }
+            this.salvarCarrinho();
+          },
+          
+          removerItem(index) {
+            this.itens.splice(index, 1);
+            this.salvarCarrinho();
+          },
+          
+          salvarCarrinho() {
+            localStorage.setItem('carrinho', JSON.stringify(this.itens));
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

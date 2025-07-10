@@ -1,0 +1,51 @@
+<main class="min-h-screen flex items-center justify-center bg-gradient-to-tr from-cyan-400 to-blue-600 p-4">
+  <div class="transform scale-90 bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row w-full max-w-5xl">
+    
+    <!-- Formulário de Cadastro -->
+    <div class="md:w-1/2 p-10 flex flex-col justify-center">
+      <div class="bg-blue-100 border border-blue-300 rounded-xl shadow p-4 mb-4 text-center">
+        <h1 class="text-3xl font-bold text-blue-600">Construction Store</h1>
+      </div>
+
+      <h2 class="text-gray-600 mb-6">Crie sua conta para começar</h2>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div class="space-y-4">
+          <div>
+            <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+          </div>
+
+          <div>
+            <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+            <% if @minimum_password_length %>
+              <em class="text-xs text-gray-500">(<%= @minimum_password_length %> caracteres mínimo)</em>
+            <% end %>
+            <%= f.password_field :password, autocomplete: "new-password", class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+          </div>
+
+          <div>
+            <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+          </div>
+
+          <div>
+            <%= f.submit "Cadastrar", class: "w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition" %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="text-center text-sm text-gray-600 mt-4">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+
+    <!-- Imagem ilustrativa -->
+    <div class="md:w-1/2 bg-blue-100 flex items-center justify-center p-6">
+      <%= image_tag "loja.png", alt: "Loja de material de construção", class: "max-h-[450px] object-cover rounded-lg shadow-md" %>
+    </div>
+
+  </div>
+</main>

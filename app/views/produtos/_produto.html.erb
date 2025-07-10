@@ -1,0 +1,18 @@
+
+<div id="<%= dom_id produto %>" class="p-4 rounded shadow bg-white text-center">
+  <p class="text-lg font-bold"><%= produto.nome %></p>
+
+  <p class="text-gray-700"><%= produto.descricao %></p>
+
+  <p class="text-orange-600 font-semibold text-xl mt-2">R$ <%= number_to_currency(produto.preco, unit: '', separator: ',', delimiter: '.') %></p>
+
+  <p class="text-sm text-gray-500">Estoque: <%= produto.estoque %></p>
+
+  <% if local_assigns[:mostrar_botoes] %>
+    <div class="mt-4 space-y-2">
+      <%= link_to "Comprar", comprar_produto_path(produto), class: "block bg-purple-600 text-white py-1 rounded font-bold" %>
+      <%= link_to "Ver Detalhes", produto_path(produto), class: "block bg-blue-600 text-white py-1 rounded font-bold" %>
+      <%= button_to "Adicionar ao Carrinho", adicionar_ao_carrinho_path(produto), method: :post, class: "block bg-orange-500 text-white py-1 rounded font-bold" %>
+    </div>
+  <% end %>
+</div>

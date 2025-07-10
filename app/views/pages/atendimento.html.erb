@@ -1,0 +1,26 @@
+<% content_for :title, "Avalie o nosso atendimento" %>
+
+<div class="max-w-lg mx-auto bg-white rounded-2xl shadow-md p-8 mt-10">
+  <h1 class="text-2xl font-bold text-center text-blue-700 mb-6">Avalie o nosso atendimento</h1>
+  <%= form_with url: atendimento_path, method: :post, local: true do |f| %>
+    <div class="mb-4">
+      <%= f.label :nome, "Seu nome", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :nome, class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" %>
+    </div>
+    <div class="mb-4">
+      <%= f.label :email, "Seu e-mail", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.email_field :email, class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" %>
+    </div>
+    <div class="mb-4">
+      <%= f.label :nota, "Nota", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.select :nota, options_for_select((1..5).map { |n| ["#{n} estrela#{'s' if n > 1}", n] }), {}, class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" %>
+    </div>
+    <div class="mb-4">
+      <%= f.label :comentario, "Comentário", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_area :comentario, rows: 4, class: "mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" %>
+    </div>
+    <div>
+      <%= f.submit "Enviar avaliação", class: "w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold" %>
+    </div>
+  <% end %>
+</div>

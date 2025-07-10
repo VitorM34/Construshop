@@ -1,0 +1,70 @@
+<%= form_with(model: produto, local: true, html: { multipart: true }) do |form| %>
+<%=current_user.email %>
+  <% if produto.errors.any? %>
+    <div class="mb-4 text-red-600">
+      <h2 class="font-semibold text-lg"><%= pluralize(produto.errors.count, "erro") %> impedem o produto de ser salvo:</h2>
+      <ul class="list-disc ml-5 mt-2">
+        <% produto.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow-md">
+    <!-- Tooltip para admins -->
+    <% if current_user&.admin? %>
+      <div class="mb-6 flex items-center justify-center">
+        <span class="relative group cursor-pointer">
+          <span class="underline text-blue-700 font-medium">Dica para admin</span>
+          <span class="absolute left-1/2 -translate-x-1/2 mt-2 w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 shadow-lg">
+            Preencha todos os campos com atenção. Produtos cadastrados ficarão visíveis para todos os usuários.<br>Você pode editar ou excluir depois.
+          </span>
+        </span>
+      </div>
+    <% end %>
+
+    <!-- Nome -->
+    <div class="mb-4">
+      <%= form.label :nome, class: "block text-md font-medium text-gray-900" %>
+      <%= form.text_field :nome, class: "mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" %>
+    </div>
+
+    <!-- Descrição -->
+    <div class="mb-4">
+      <%= form.label :descricao, class: "block text-md font-medium text-gray-900" %>
+      <%= form.text_area :descricao, rows: 4, class: "mt-1 w-full border border-gray-300 rounded-md p-2 resize-none focus:ring focus:ring-blue-300" %>
+    </div>
+
+    <div class="flex flex-wrap gap-4">
+      <!-- Preço -->
+      <div class="flex-1 min-w-[150px]">
+        <%= form.label :preco, class: "block text-md font-medium text-gray-900" %>
+        <%= form.number_field :preco, step: 0.01, class: "mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" %>
+      </div>
+
+      <!-- Estoque -->
+      <div class="flex-1 min-w-[150px]">
+        <%= form.label :estoque, class: "block text-md font-medium text-gray-900" %>
+        <%= form.number_field :estoque, class: "mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" %>
+      </div>
+    </div>
+
+    <!-- Imagem -->
+    <div class="mb-4 mt-4">
+      <%= form.label :imagem, "Imagem do produto", class: "block text-md font-medium text-gray-900" %>
+      <%= form.file_field :imagem, direct_upload: true, class: "mt-1 w-full border border-gray-300 rounded-md p-2 bg-white" %>
+
+      <% if produto.persisted? && produto.imagem.attached? %>
+        <div class="mt-2 text-center">
+          <%= image_tag url_for(produto.imagem), class: "mx-auto max-w-[100px] max-h-[100px] object-contain border p-1" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Botão -->
+    <div class="mt-6 text-center">
+      <%= form.submit "Salvar", class: "bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-8 rounded-md transition" %>
+    </div>
+  </div>
+<% end %>

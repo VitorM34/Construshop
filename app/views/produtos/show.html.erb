@@ -1,0 +1,44 @@
+<% content_for :title, "Detalhes do Produto" %>
+
+<% if notice.present? %>
+  <p class="text-green-600 text-center mb-4 font-semibold"><%= notice %></p>
+<% end %>
+
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded-2xl p-6 mt-6 flex flex-col md:flex-row gap-6">
+  <!-- Imagem -->
+  <div class="w-full md:w-1/2 flex items-center justify-center">
+    <% if @produto.imagem.attached? %>
+      <%= image_tag url_for(@produto.imagem), class: "rounded-xl w-full h-auto object-contain max-h-96" %>
+    <% else %>
+      <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400 text-sm rounded-xl">
+        Sem imagem
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Informações do produto -->
+  <div class="w-full md:w-1/2 flex flex-col justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2"><%= @produto.nome %></h1>
+      <p class="text-3xl font-extrabold text-gray-900 mb-6">
+        R$ <%= number_to_currency(@produto.preco, unit: "", separator: ",", delimiter: ".") %>
+        <p class="text-gray-600 text-base mb-4">Descrição: <%= @produto.descricao %></p>
+      </p>
+    </div>
+
+    <!-- Ações principais -->
+   <div class="space-y-3">
+  <% if policy(@produto).edit? %>
+    <%= link_to "EDITAR", edit_produto_path(@produto), class: "block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded-lg" %>
+  <% end %>
+
+  <% if policy(@produto).destroy? %>
+    <%= button_to "EXCLUIR", produto_path(@produto), method: :delete, data: { confirm: "Tem certeza?" }, class: "block w-full bg-red-600 hover:bg-red-800 text-white text-medium text-center py-2 rounded-lg" %>
+  <% end %>
+
+  <%= link_to "COMPRAR", "#", class: "block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-3 rounded-lg" %>
+
+  <%= link_to "Voltar", produtos_path, class: "block w-full text-center text-gray-700 hover:underline mt-2" %>
+</div>
+  </div>
+</div>
