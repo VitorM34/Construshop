@@ -24,11 +24,11 @@
     <style>
       /* Estilos adicionais para o carrinho */
       .carrinho-modal {
-        background: rgb(36, 38, 143) !important;
+        background: rgb(140, 140, 142) !important;
         opacity: 1 !important;
       }
       .carrinho-item:hover {
-        background-color: #9fa3a3;
+        background-color: #9a9aa8;
       }
       .carrinho-quantidade-btn {
         width: 24px;
@@ -48,10 +48,10 @@
       <nav class="flex items-center space-x-6 text-base">
         <a href="/quem-somos" class="transition-colors text-white duration-200 hover:text-gray-100">Quem somos</a>
         <a href="/atendimento" class="transition-colors text-white duration-200 hover:text-gray-100">Avalie-nos</a>
-        <a href="tel:+559999999999" class="transition-colors text-white duration-200 hover:text-gray-100">📞 Telefone</a>
+        <a href="tel:+559999999999" class="transition-colors text-white duration-200 hover:text-gray-100">Telefone</a>
 
      <% if user_signed_in? %>
-        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "bg-[#444] hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "bg-[#444] hover:bg-red-500 text-white font-bold py-2 px-4 rounded" %>
      <% end %>
 
         <!-- Botão do carrinho -->

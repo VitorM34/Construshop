@@ -2,9 +2,8 @@ class ProdutosController < ApplicationController
   before_action :set_produto, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
 
-  after_action :verify_authorized, except: [ :index ]
-  after_action :verify_policy_scoped, only: [ :index ]
-
+  after_action :verify_authorized, except: %i[index]
+  after_action :verify_policy_scoped, only: %i[index]
   def index
     @categorias = Categoria.all
     @mostrar_botoes = true

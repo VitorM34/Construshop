@@ -5,7 +5,9 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   before_action :authenticate_user!
 
+
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+end
 
   private
 
@@ -18,4 +20,3 @@ class ApplicationController < ActionController::Base
     def after_sign_out_path_for(resource_or_scope)
       new_user_session_path
     end
-end

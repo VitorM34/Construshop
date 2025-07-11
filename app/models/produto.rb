@@ -5,10 +5,6 @@ class Produto < ApplicationRecord
   belongs_to :user
   has_one_attached :imagem
 
-  # def promocao?
-  # preco_original.present? && preco_original > preco
-  # end
-
   broadcasts_to ->(produto) { "produtos" },
     inserts_by: :prepend,
       target: "produtos"

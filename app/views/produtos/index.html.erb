@@ -9,6 +9,69 @@
 
 <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Produtos</h1>
 
+<!-- Carrossel Flowbite no topo -->
+<div id="produtos-carousel" class="relative  w-1/2 max-w-4xl mx-auto mt-6 mb-10" data-carousel="slide" data-carousel-autoplay="true">
+  <div class="relative h-64 overflow-hidden rounded-xl">
+    <% @produtos.first(6).each_with_index do |produto, idx| %>
+      <div class="duration-700 ease-in-out absolute inset-0 <%= idx == 0 ? '' : 'hidden' %> flex items-center justify-center" data-carousel-item>
+        <div class="flex flex-col items-center justify-center h-full p-4">
+          <% if produto.imagem.attached? %>
+            <%= image_tag url_for(produto.imagem), class: "max-h-52 object-contain rounded-lg shadow " %>
+          <% else %>
+            <div class="h-52 w-full flex flex-col items-center justify-center text-gray-400 bg-gray-100 rounded-lg shadow">Sem imagem</div>
+          <% end %>
+          <h3 class="mt-4 text-lg font-semibold text-gray-800 text-center"><%= produto.nome %></h3>
+          <p class="text-orange-600 font-bold text-xl mt-1">
+            R$ <%= number_to_currency(produto.preco, unit: "", separator: ",", delimiter: ".") %>
+          </p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+
+
+  <!-- Controles -->
+  <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+      <svg class="w-4 h-4 text-blue-700" aria-hidden="true" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/></svg>
+      <span class="sr-only">Anterior</span>
+    </span>
+  </button>
+  <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+      <svg class="w-4 h-4 text-blue-700" aria-hidden="true" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/></svg>
+      <span class="sr-only">Próximo</span>
+    </span>
+  </button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const items = document.querySelectorAll('#produtos-carousel [data-carousel-item]');
+    const total = items.length;
+    let idx = 0;
+    let prevIdx = 0;
+    items.forEach((el, i) => {
+      el.classList.toggle('hidden', i !== 0);
+      el.style.opacity = i === 0 ? 1 : 0;
+      el.style.transition = 'opacity 0.7s cubic-bezier(0.4,0,0.2,1)';
+    });
+    setInterval(() => {
+      prevIdx = idx;
+      idx = (idx + 1) % total;
+      items[prevIdx].style.opacity = 0;
+      setTimeout(() => {
+        items[prevIdx].classList.add('hidden');
+        items[idx].classList.remove('hidden');
+        setTimeout(() => {
+          items[idx].style.opacity = 1;
+        }, 10);
+      }, 700);
+    }, 3500);
+  });
+</script>
+
 <!-- Filtro por categoria -->
 <div class="max-w-4xl mx-auto mb-8">
   <%= form_with url: produtos_path, method: :get, local: true do %>
@@ -27,22 +90,19 @@
 <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
   <% @produtos.each do |produto| %>
     <div class="bg-white border border-gray-200 rounded-xl shadow p-3 flex flex-col items-center w-full max-w-xs mx-auto hover:shadow-lg transition h-[350px]">
-
       <!-- Imagem clicável -->
       <%= link_to produto_path(produto), class: "w-full h-28 flex items-center justify-center mb-2" do %>
         <% if produto.imagem.attached? %>
           <%= image_tag url_for(produto.imagem), class: "w-24 h-24 object-contain rounded" %>
         <% else %>
-          <div class="w-24 h-24 bg-gray-100 flex items-center justify-center text-gray-400 text-xs rounded">
-            Sem imagem
-          </div>
+          <div class="w-24 h-24 bg-gray-100 flex items-center justify-center text-gray-400 text-xs rounded">Sem imagem</div>
         <% end %>
       <% end %>
 
       <!-- Conteúdo -->
       <div class="flex flex-col items-center flex-grow w-full">
         <h5 class="text-base font-semibold text-gray-900 mb-1 text-center line-clamp-1"><%= produto.nome %></h5>
-        <p class="text-gray-500 text-xs mb-1 text-center line-clamp-2"><%= truncate(produto.descricao, length: 40) %></p>
+        <p class="text-gray-500 text-xs mb-1 text-center line-clamp-2 max-h-9 overflow-hidden break-words"><%= produto.descricao %></p>
 
         <!-- Estrelas -->
         <div class="flex items-center mb-2">
